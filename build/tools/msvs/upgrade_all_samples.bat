@@ -6,12 +6,8 @@ set SAMPLESDIR=%~dp0..\..\..\samples
 
 echo Samples dir: %SAMPLESDIR%
 
-cd /d %SAMPLESDIR%
-
 rem Enumerator all sample directories
-
-for /D %%s in (*.*) do (
-	if exist %%s\%%s_vc9.vcproj (
-		call %~dp0\upgrade_sample.bat %%~fs
-	)
+for /R %SAMPLESDIR% %%s in (*_vc9.sln) do (
+	set SAMPLEDIR=%%~dps
+	call %~dp0\upgrade_sample.bat !SAMPLEDIR:~0,-1!
 )

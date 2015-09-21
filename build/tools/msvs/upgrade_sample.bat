@@ -6,29 +6,28 @@ set SNAME=%~n1
 set SPATH=%~1
 set BASE_SLN=%SNAME%_vc9.sln
 set BASE_PROJ=%SPATH%\%SNAME%_vc9.vcproj
-set NEW_PROJ=%SPATH%\%SNAME%.vcxproj
+set INPUT_SLN=%SPATH%\%BASE_SLN%
 
-if NOT EXIST %BASE_PROJ% (
-	echo Error: Could not find %BASE_PROJ%
-	exit /b 1
-)
-
-if EXIST %NEW_PROJ% (
-	echo Error: %NEW_PROJ% already updated
+if NOT EXIST %INPUT_SLN% (
+	echo Error: Could not find %INPUT_SLN%; bakefiles not generated?
 	exit /b 1
 )
 
 echo Upgrading sample: %SNAME% (%SPATH%)
 
-rem Remove potential Backup dir
+rem Clean dir from potential previous run
 if exist %SPATH%\Backup rmdir /s /q %SPATH%\Backup
+del %SPATH%\*.vcxproj >nul 2>&1
+del %SPATH%\*.vcxproj.filters >nul 2>&1
 
 rem Upgrade SLN and VCproj
-devenv %BASE_PROJ% /upgrade
+devenv %INPUT_SLN% /upgrade
 
 rem Rename new project files
-rename %SPATH%\%SNAME%_vc9.vcxproj %SNAME%.vcxproj
-rename %SPATH%\%SNAME%_vc9.vcxproj.filters %SNAME%.vcxproj.filters
+for %%f in (%SPATH%\*.vcxproj %SPATH%\*.vcxproj.filters) do (
+	set FN=%%~nxf
+	rename %SPATH%\!FN! !FN:_vc9=!
+)
 
 rem Recreate new solution with updated filename
 set ORG_SLN=%SPATH%\%BASE_SLN%
@@ -39,10 +38,10 @@ call %~dp0\upgrade_convert_sln.bat 12 %ORG_SLN% %SPATH%\%SNAME%_vc12.sln
 call %~dp0\upgrade_convert_sln.bat 14 %ORG_SLN% %SPATH%\%SNAME%_vc14.sln
 
 rem Remove .SUO
-del /a %SPATH%\%SNAME%_vc9*.suo
+del /a %SPATH%\%SNAME%_vc9*.suo>nul 2>&1
 
 rem Restore original SLN
-move %SPATH%\Backup\%BASE_SLN% %SPATH%\%BASE_SLN%
+move %SPATH%\Backup\%BASE_SLN% %SPATH%\%BASE_SLN%>nul 2>&1
 rmdir /S /Q %SPATH%\Backup
 
 del %SPATH%\UpgradeLog.htm
