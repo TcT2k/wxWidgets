@@ -95,35 +95,7 @@ static void DrawGradientRectangle(wxDC& dc,
                                   const wxColour& end_color,
                                   int direction)
 {
-    int rd, gd, bd, high = 0;
-    rd = end_color.Red() - start_color.Red();
-    gd = end_color.Green() - start_color.Green();
-    bd = end_color.Blue() - start_color.Blue();
-
-    if (direction == wxAUI_GRADIENT_VERTICAL)
-        high = rect.GetHeight()-1;
-    else
-        high = rect.GetWidth()-1;
-
-    for (int i = 0; i <= high; ++i)
-    {
-        int r,g,b;
-
-
-        r = start_color.Red() + (high <= 0 ? 0 : (((i*rd*100)/high)/100));
-        g = start_color.Green() + (high <= 0 ? 0 : (((i*gd*100)/high)/100));
-        b = start_color.Blue() + (high <= 0 ? 0 : (((i*bd*100)/high)/100));
-
-        wxPen p(wxColor((unsigned char)r,
-                        (unsigned char)g,
-                        (unsigned char)b));
-        dc.SetPen(p);
-
-        if (direction == wxAUI_GRADIENT_VERTICAL)
-            dc.DrawLine(rect.x, rect.y+i, rect.x+rect.width, rect.y+i);
-        else
-            dc.DrawLine(rect.x+i, rect.y, rect.x+i, rect.y+rect.height);
-    }
+    dc.GradientFillLinear(rect, start_color, end_color, (direction == wxAUI_GRADIENT_VERTICAL) ? wxSOUTH : wxEAST);
 }
 
 wxString wxAuiChopText(wxDC& dc, const wxString& text, int max_size)
