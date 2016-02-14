@@ -137,8 +137,6 @@ protected:
 
     void DrawCaptionBackground(wxDC& dc, const wxRect& rect, bool active);
 
-    void InitBitmaps();
-
 protected:
 
     wxPen m_borderPen;
@@ -146,14 +144,6 @@ protected:
     wxBrush m_backgroundBrush;
     wxBrush m_gripperBrush;
     wxFont m_captionFont;
-    wxBitmap m_inactiveCloseBitmap;
-    wxBitmap m_inactivePinBitmap;
-    wxBitmap m_inactiveMaximizeBitmap;
-    wxBitmap m_inactiveRestoreBitmap;
-    wxBitmap m_activeCloseBitmap;
-    wxBitmap m_activePinBitmap;
-    wxBitmap m_activeMaximizeBitmap;
-    wxBitmap m_activeRestoreBitmap;
     wxPen m_gripperPen1;
     wxPen m_gripperPen2;
     wxPen m_gripperPen3;

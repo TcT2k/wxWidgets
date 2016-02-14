@@ -182,79 +182,6 @@ wxAuiDefaultDockArt::wxAuiDefaultDockArt()
     m_buttonSize = 14;
     m_gripperSize = 9;
     m_gradientType = wxAUI_GRADIENT_VERTICAL;
-
-    InitBitmaps();
-}
-
-void
-wxAuiDefaultDockArt::InitBitmaps ()
-{
-    // some built in bitmaps
-#if defined( __WXMAC__ )
-     static const unsigned char close_bits[]={
-         0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0xFE, 0x03, 0xF8, 0x01, 0xF0, 0x19, 0xF3,
-         0xB8, 0xE3, 0xF0, 0xE1, 0xE0, 0xE0, 0xF0, 0xE1, 0xB8, 0xE3, 0x19, 0xF3,
-         0x01, 0xF0, 0x03, 0xF8, 0x0F, 0xFE, 0xFF, 0xFF };
-#elif defined(__WXGTK__)
-     static const unsigned char close_bits[]={
-         0xff, 0xff, 0xff, 0xff, 0x07, 0xf0, 0xfb, 0xef, 0xdb, 0xed, 0x8b, 0xe8,
-         0x1b, 0xec, 0x3b, 0xee, 0x1b, 0xec, 0x8b, 0xe8, 0xdb, 0xed, 0xfb, 0xef,
-         0x07, 0xf0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-#else
-    static const unsigned char close_bits[]={
-         // reduced height, symmetric
-         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xcf, 0xf3, 0x9f, 0xf9,
-         0x3f, 0xfc, 0x7f, 0xfe, 0x3f, 0xfc, 0x9f, 0xf9, 0xcf, 0xf3, 0xff, 0xff,
-         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-      /*
-         // same height as maximize/restore
-         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xe7, 0xe7, 0xcf, 0xf3, 0x9f, 0xf9,
-         0x3f, 0xfc, 0x7f, 0xfe, 0x3f, 0xfc, 0x9f, 0xf9, 0xcf, 0xf3, 0xe7, 0xe7,
-         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-      */
-#endif
-
-    static const unsigned char maximize_bits[] = {
-        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x07, 0xf0, 0xf7, 0xf7, 0x07, 0xf0,
-        0xf7, 0xf7, 0xf7, 0xf7, 0xf7, 0xf7, 0xf7, 0xf7, 0xf7, 0xf7, 0x07, 0xf0,
-        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-
-    static const unsigned char restore_bits[]={
-        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1f, 0xf0, 0x1f, 0xf0, 0xdf, 0xf7,
-        0x07, 0xf4, 0x07, 0xf4, 0xf7, 0xf5, 0xf7, 0xf1, 0xf7, 0xfd, 0xf7, 0xfd,
-        0x07, 0xfc, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-
-    static const unsigned char pin_bits[]={
-        0xff,0xff,0xff,0xff,0xff,0xff,0x1f,0xfc,0xdf,0xfc,0xdf,0xfc,
-        0xdf,0xfc,0xdf,0xfc,0xdf,0xfc,0x0f,0xf8,0x7f,0xff,0x7f,0xff,
-        0x7f,0xff,0xff,0xff,0xff,0xff,0xff,0xff};
-
-#ifdef __WXMAC__
-    m_inactiveCloseBitmap = wxAuiBitmapFromBits(close_bits, 16, 16, *wxWHITE);
-    m_activeCloseBitmap = wxAuiBitmapFromBits(close_bits, 16, 16, *wxWHITE );
-#else
-    m_inactiveCloseBitmap = wxAuiBitmapFromBits(close_bits, 16, 16, m_inactiveCaptionTextColour);
-    m_activeCloseBitmap = wxAuiBitmapFromBits(close_bits, 16, 16, m_activeCaptionTextColour);
-#endif
-
-#ifdef __WXMAC__
-    m_inactiveMaximizeBitmap = wxAuiBitmapFromBits(maximize_bits, 16, 16, *wxWHITE);
-    m_activeMaximizeBitmap = wxAuiBitmapFromBits(maximize_bits, 16, 16, *wxWHITE );
-#else
-    m_inactiveMaximizeBitmap = wxAuiBitmapFromBits(maximize_bits, 16, 16, m_inactiveCaptionTextColour);
-    m_activeMaximizeBitmap = wxAuiBitmapFromBits(maximize_bits, 16, 16, m_activeCaptionTextColour);
-#endif
-
-#ifdef __WXMAC__
-    m_inactiveRestoreBitmap = wxAuiBitmapFromBits(restore_bits, 16, 16, *wxWHITE);
-    m_activeRestoreBitmap = wxAuiBitmapFromBits(restore_bits, 16, 16, *wxWHITE );
-#else
-    m_inactiveRestoreBitmap = wxAuiBitmapFromBits(restore_bits, 16, 16, m_inactiveCaptionTextColour);
-    m_activeRestoreBitmap = wxAuiBitmapFromBits(restore_bits, 16, 16, m_activeCaptionTextColour);
-#endif
-
-    m_inactivePinBitmap = wxAuiBitmapFromBits(pin_bits, 16, 16, m_inactiveCaptionTextColour);
-    m_activePinBitmap = wxAuiBitmapFromBits(pin_bits, 16, 16, m_activeCaptionTextColour);
 }
 
 int wxAuiDefaultDockArt::GetMetric(int id)
@@ -327,8 +254,6 @@ void wxAuiDefaultDockArt::SetColour(int id, const wxColor& colour)
             break;
         default: wxFAIL_MSG(wxT("Invalid Metric Ordinal")); break;
     }
-
-    InitBitmaps();
 }
 
 void wxAuiDefaultDockArt::SetFont(int id, const wxFont& font)
@@ -643,81 +568,108 @@ void wxAuiDefaultDockArt::DrawGripper(wxDC& dc, wxWindow *WXUNUSED(window),
     }
 }
 
-void wxAuiDefaultDockArt::DrawPaneButton(wxDC& dc, wxWindow *WXUNUSED(window),
+void wxAuiDefaultDockArt::DrawPaneButton(wxDC& dc, wxWindow *window,
                                       int button,
                                       int button_state,
                                       const wxRect& _rect,
                                       wxAuiPaneInfo& pane)
 {
-    wxBitmap bmp;
-    switch (button)
-    {
-        default:
-        case wxAUI_BUTTON_CLOSE:
-            if (pane.state & wxAuiPaneInfo::optionActive)
-                bmp = m_activeCloseBitmap;
-            else
-                bmp = m_inactiveCloseBitmap;
-            break;
-        case wxAUI_BUTTON_PIN:
-            if (pane.state & wxAuiPaneInfo::optionActive)
-                bmp = m_activePinBitmap;
-            else
-                bmp = m_inactivePinBitmap;
-            break;
-        case wxAUI_BUTTON_MAXIMIZE_RESTORE:
-            if (pane.IsMaximized())
-            {
-                if (pane.state & wxAuiPaneInfo::optionActive)
-                    bmp = m_activeRestoreBitmap;
-                else
-                    bmp = m_inactiveRestoreBitmap;
-            }
-            else
-            {
-                if (pane.state & wxAuiPaneInfo::optionActive)
-                    bmp = m_activeMaximizeBitmap;
-                else
-                    bmp = m_inactiveMaximizeBitmap;
-            }
-            break;
-    }
+    // Create square rect and center it
+    wxRect rect(0, 0, _rect.width, _rect.height);
+    if (rect.width > rect.height)
+        rect.width = rect.height;
+    else
+        rect.height = rect.width;
+    rect = rect.CenterIn(_rect);
 
-
-    wxRect rect = _rect;
-
-    int old_y = rect.y;
-    rect.y = rect.y + (rect.height/2) - (bmp.GetHeight()/2);
-    rect.height = old_y + rect.height - rect.y - 1;
-
-
-    if (button_state == wxAUI_BUTTON_STATE_PRESSED)
-    {
-        rect.x++;
-        rect.y++;
-    }
+    wxColour glyphColour;
+    if (pane.state & wxAuiPaneInfo::optionActive)
+        glyphColour = m_activeCaptionTextColour;
+    else
+        glyphColour = m_inactiveCaptionTextColour;
 
     if (button_state == wxAUI_BUTTON_STATE_HOVER ||
         button_state == wxAUI_BUTTON_STATE_PRESSED)
     {
-        if (pane.state & wxAuiPaneInfo::optionActive)
-        {
-            dc.SetBrush(wxBrush(m_activeCaptionColour.ChangeLightness(120)));
-            dc.SetPen(wxPen(m_activeCaptionColour.ChangeLightness(70)));
-        }
-        else
-        {
-            dc.SetBrush(wxBrush(m_inactiveCaptionColour.ChangeLightness(120)));
-            dc.SetPen(wxPen(m_inactiveCaptionColour.ChangeLightness(70)));
-        }
+        // Draw background
+        wxColour bgColour = *wxWHITE;
+        if (button_state == wxAUI_BUTTON_STATE_PRESSED)
+            bgColour = bgColour.ChangeLightness(90);
 
-        // draw the background behind the button
-        dc.DrawRectangle(rect.x, rect.y, 15, 15);
+        dc.SetBrush(wxBrush(bgColour));
+        dc.SetPen(wxPen(bgColour.ChangeLightness(70)));
+
+#ifdef __WXMAC__
+        dc.DrawEllipse(rect);
+#else
+        dc.DrawRectangle(rect);
+#endif // __WXMAC__
+
+        dc.SetPen(wxPen(glyphColour.ChangeLightness(70)));
+    }
+    else
+    {
+        dc.SetPen(wxPen(glyphColour));
     }
 
+    // Draw glyph
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
+    wxRect gr = rect;
+    gr.Deflate(window->FromDIP(3));
 
-    // draw the button itself
-    dc.DrawBitmap(bmp, rect.x, rect.y, true);
+    switch (button)
+    {
+        default:
+        case wxAUI_BUTTON_CLOSE:
+            dc.DrawLine(gr.x + 1, gr.y + 1, gr.GetRight() + 1, gr.GetBottom() + 1);
+            dc.DrawLine(gr.GetRight(), gr.y + 1, gr.x, gr.GetBottom() + 1);
+            break;
+        case wxAUI_BUTTON_MAXIMIZE_RESTORE:
+#ifdef __WXMAC__
+            dc.DrawLine(gr.x + gr.width / 2, gr.y, gr.x + gr.width / 2, gr.GetBottom() + 2);
+            dc.DrawLine(gr.x, gr.y + gr.height / 2, gr.GetRight() + 2, gr.y + gr.height / 2);
+#else
+            if (pane.IsMaximized())
+            {
+                gr.Deflate(1);
+                gr.Offset(0, 2);
+
+                wxPoint points[] =
+                {
+                    wxPoint(2, 0),
+                    wxPoint(2, -2),
+                    wxPoint(gr.width + 1, -2),
+                    wxPoint(gr.width + 1, gr.height - 2),
+                    wxPoint(gr.width - 2, gr.height - 2)
+                };
+                dc.DrawLines(WXSIZEOF(points), points, gr.x, gr.y);
+            }
+
+            dc.DrawRectangle(gr);
+#endif // __WXMAC__
+            break;
+        case wxAUI_BUTTON_PIN:
+            {
+                gr.Inflate(-(gr.width/5), 1);
+
+                dc.DrawLine(gr.x, gr.y + gr.height / 2, gr.GetRight() + 2, gr.y + gr.height / 2);
+                dc.DrawLine(gr.x + gr.width / 2, gr.GetBottom(), gr.x + gr.width / 2, gr.y + gr.height / 2);
+
+                wxPoint points[] =
+                {
+                    wxPoint(gr.x + 1, gr.y + gr.height / 2),
+                    wxPoint(gr.x + 1, gr.y),
+                    wxPoint(gr.GetRight(), gr.y)
+                };
+                dc.DrawLines(WXSIZEOF(points), points);
+
+                wxPen pen = dc.GetPen();
+                pen.SetWidth(2);
+                dc.SetPen(pen);
+                dc.DrawLine(gr.GetRight(), gr.y, gr.GetRight(), gr.y + gr.height / 2);
+                break;
+            }
+    }
 }
 
 
