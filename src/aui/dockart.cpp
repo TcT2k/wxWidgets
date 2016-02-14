@@ -177,9 +177,12 @@ wxAuiDefaultDockArt::wxAuiDefaultDockArt()
 #else
     m_sashSize = 4;
 #endif
-    m_captionSize = 17;
+    wxSize captionFontSize = m_captionFont.GetPixelSize();
+    if (!captionFontSize.IsFullySpecified())
+        captionFontSize.Set(0, 11);
+    m_captionSize = captionFontSize.GetHeight() + 6;
     m_borderSize = 1;
-    m_buttonSize = 14;
+    m_buttonSize = m_captionSize - 2;
     m_gripperSize = 9;
     m_gradientType = wxAUI_GRADIENT_VERTICAL;
 }
