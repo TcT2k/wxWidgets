@@ -28,6 +28,7 @@
 #include "wx/aui/dockart.h"
 #include "wx/aui/auibook.h"
 #include "wx/aui/tabart.h"
+#include "wx/utils.h"
 
 #ifndef WX_PRECOMP
     #include "wx/settings.h"
@@ -184,7 +185,12 @@ wxAuiDefaultDockArt::wxAuiDefaultDockArt()
     m_borderSize = 1;
     m_buttonSize = m_captionSize - 2;
     m_gripperSize = 9;
-    m_gradientType = wxAUI_GRADIENT_VERTICAL;
+#ifdef __WXMSW__
+    if (wxCheckOsVersion(6, 2))
+        m_gradientType = wxAUI_GRADIENT_NONE;
+    else
+#endif
+        m_gradientType = wxAUI_GRADIENT_VERTICAL;
 }
 
 int wxAuiDefaultDockArt::GetMetric(int id)
