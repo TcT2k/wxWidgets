@@ -491,7 +491,9 @@ private:
     {
         m_frame->GetDockArt()->SetMetric(wxAUI_DOCKART_CAPTION_SIZE,
                                          event.GetPosition());
-        m_frame->DoUpdate();
+		m_frame->GetDockArt()->SetMetric(wxAUI_DOCKART_PANE_BUTTON_SIZE,
+                                         event.GetPosition() - 2);
+		m_frame->DoUpdate();
     }
 
     void OnSetColor(wxCommandEvent& event)
