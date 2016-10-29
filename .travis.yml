@@ -30,15 +30,10 @@ matrix:
           compiler: clang
           env: wxCONFIGURE_FLAGS="--enable-cxx11" wxMAKEFILE_FLAGS="CXXFLAGS='-std=c++11 -stdlib=libc++'"
 
-branches:
-    only:
-        - master
-        - WX_3_0_BRANCH
-
 notifications:
     email:
         recipients:
-            - vadim@wxwidgets.org
+            - github@tc84.de
         on_success: change
         on_failure: change
 
