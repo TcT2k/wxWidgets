@@ -7,28 +7,26 @@ sudo: required
 
 matrix:
     include:
+        - compiler: gcc
+          env: wxTOOLSET=cmake wxCMAKE_GENERATOR="Unix Makefiles"
         - dist: trusty
           compiler: gcc
           env: wxTOOLSET=cmake wxCMAKE_GENERATOR="Unix Makefiles"
+        - dist: trusty
+          compiler: clang
+          env: wxTOOLSET=cmake wxCMAKE_GENERATOR="Unix Makefiles"
         - os: osx
-          osx_image: beta-xcode6.2
+          osx_image: xcode8
           compiler: clang
-          env: wxTOOLSET=cmake wxCMAKE_GENERATOR=Xcode wxCMAKE_DEFINES="-DCMAKE_CXX_STANDARD=11"
-        - compiler: gcc
-        - compiler: gcc
-          env: wxCONFIGURE_FLAGS="--disable-precomp-headers --enable-monolithic"
-        - dist: trusty
-          compiler: gcc
-        - dist: trusty
-          compiler: gcc
-          env: wxCONFIGURE_FLAGS="--enable-cxx11 --enable-stl" wxMAKEFILE_FLAGS="CXXFLAGS=-std=c++11"
-        - dist: trusty
-          compiler: clang
-          env: wxCONFIGURE_FLAGS="--disable-shared"
+          env: wxTOOLSET=cmake wxCMAKE_GENERATOR="Unix Makefiles" wxCMAKE_TESTS=OFF wxCMAKE_DEFINES=""
         - os: osx
           osx_image: xcode6.4
           compiler: clang
-          env: wxCONFIGURE_FLAGS="--enable-cxx11" wxMAKEFILE_FLAGS="CXXFLAGS='-std=c++11 -stdlib=libc++'"
+          env: wxTOOLSET=cmake wxCMAKE_GENERATOR=Xcode wxCMAKE_DEFINES="-DwxUSE_CPPUNIT=builtin"
+        - os: osx
+          osx_image: xcode8
+          compiler: clang
+          env: wxTOOLSET=cmake wxCMAKE_GENERATOR=Xcode wxCMAKE_DEFINES="-DCMAKE_CXX_STANDARD=11"
 
 notifications:
     email:
