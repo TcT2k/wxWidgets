@@ -5,8 +5,12 @@ branches:
   - master
   - WX_3_0_BRANCH
 
+image: Visual Studio 2017 RC
+  
 environment:
   matrix:
+  - TOOLSET: cmake
+    GENERATOR: 'Visual Studio 15'
   - TOOLSET: cmake_cygwin
   - TOOLSET: cmake_msys
   - TOOLSET: cmake_mingw
