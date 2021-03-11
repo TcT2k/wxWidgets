@@ -269,6 +269,13 @@ wxVersionInfo wxWebView::GetBackendVersionInfo(const wxString& backend)
         return wxVersionInfo();
 }
 
+void wxWebView::WarmUp(const wxString & backend, int count)
+{
+    wxStringWebViewFactoryMap::iterator iter = FindFactory(backend);
+    if (iter != m_factoryMap.end())
+        return iter->second->WarmUp(count);
+}
+
 // static
 wxStringWebViewFactoryMap::iterator wxWebView::FindFactory(const wxString &backend)
 {

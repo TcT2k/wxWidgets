@@ -46,7 +46,6 @@ public:
 
     wxWebViewEdge* m_ctrl;
 
-    wxCOMPtr<ICoreWebView2Environment> m_webViewEnvironment;
     wxCOMPtr<ICoreWebView2> m_webView;
     wxCOMPtr<ICoreWebView2Controller> m_webViewController;
 
@@ -80,7 +79,6 @@ public:
     HRESULT OnWebMessageReceived(ICoreWebView2* sender, ICoreWebView2WebMessageReceivedEventArgs* args);
     HRESULT OnAddScriptToExecuteOnDocumentedCreatedCompleted(HRESULT errorCode, LPCWSTR id);
 
-    HRESULT OnEnvironmentCreated(HRESULT result, ICoreWebView2Environment* environment);
     HRESULT OnWebViewCreated(HRESULT result, ICoreWebView2Controller* webViewController);
 
     wxVector<wxSharedPtr<wxWebViewHistoryItem> > m_historyList;
@@ -97,10 +95,24 @@ public:
     static wxDynamicLibrary ms_loaderDll;
     static wxString ms_browserExecutableDir;
     static wxString ms_version;
+    static wxCOMPtr<ICoreWebView2Environment> ms_webViewEnvironment;
+
+    static int ms_warmedUp;
+    static int ms_warmUpCount;
+    static HWND ms_warmUpHwnd;
+    static const wxChar *ms_warmUpClassName;
+    static wxVector< wxCOMPtr<ICoreWebView2Controller> > ms_warmUpWebViewControllers;
+
+    static HRESULT OnEnvironmentCreated(HRESULT result, ICoreWebView2Environment* environment);
+    static HRESULT OnWarmUpWebViewCreated(HRESULT result, ICoreWebView2Controller* webViewController);
 
     static bool Initialize();
 
     static void Uninitialize();
+
+    static void WarmUp(int count);
+
+    static bool CreateWebViewController(wxWebViewEdgeImpl* impl);
 
     friend class wxWebViewEdgeModule;
 };

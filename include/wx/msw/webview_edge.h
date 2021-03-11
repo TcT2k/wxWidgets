@@ -133,6 +133,7 @@ public:
     }
     virtual bool IsAvailable() wxOVERRIDE;
     virtual wxVersionInfo GetVersionInfo() wxOVERRIDE;
+    virtual void WarmUp(int count) wxOVERRIDE;
 };
 
 #endif // wxUSE_WEBVIEW && wxUSE_WEBVIEW_EDGE && defined(__WXMSW__)

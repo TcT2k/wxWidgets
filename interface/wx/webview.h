@@ -541,6 +541,20 @@ public:
     static wxVersionInfo GetBackendVersionInfo(const wxString& backend = wxWebViewBackendDefault);
 
     /**
+        Improves the creation time of subsequent New() calls.
+
+        Call this method before using any wxWebView (e.g. at application startup).
+        If you plan to create a number of wxWebViews (e.g. tabs) you can
+        use @c count to improve the creation time of multiple creations with
+        New()
+
+        @since 3.1.5
+
+        @note Currently only has an effect with the Edge backend.
+    */
+    static void WarmUp(const wxString& backend = wxWebViewBackendDefault, int count = 1);
+
+    /**
         Get the title of the current web page, or its URL/path if title is not
         available.
     */

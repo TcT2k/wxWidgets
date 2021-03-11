@@ -128,6 +128,7 @@ public:
                               const wxString& name = wxASCII_STR(wxWebViewNameStr)) = 0;
     virtual bool IsAvailable() { return true; }
     virtual wxVersionInfo GetVersionInfo() { return wxVersionInfo(); }
+    virtual void WarmUp(int count) { wxUnusedVar(count); }
 };
 
 WX_DECLARE_STRING_HASH_MAP(wxSharedPtr<wxWebViewFactory>, wxStringWebViewFactoryMap);
@@ -167,6 +168,7 @@ public:
                                 wxSharedPtr<wxWebViewFactory> factory);
     static bool IsBackendAvailable(const wxString& backend);
     static wxVersionInfo GetBackendVersionInfo(const wxString& backend = wxASCII_STR(wxWebViewBackendDefault));
+    static void WarmUp(const wxString& backend = wxASCII_STR(wxWebViewBackendDefault), int count = 1);
 
     // General methods
     virtual void EnableContextMenu(bool enable = true)

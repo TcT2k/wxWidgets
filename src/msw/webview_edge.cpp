@@ -25,6 +25,7 @@
 #include "wx/msw/private.h"
 #include "wx/msw/private/cotaskmemptr.h"
 #include "wx/msw/private/webview_edge.h"
+#include "wx/msw/private/hiddenwin.h"
 
 #ifdef __VISUALC__
 #include <wrl/event.h>
@@ -57,6 +58,12 @@ GetAvailableCoreWebView2BrowserVersionString_t wxGetAvailableCoreWebView2Browser
 wxDynamicLibrary wxWebViewEdgeImpl::ms_loaderDll;
 wxString wxWebViewEdgeImpl::ms_browserExecutableDir;
 wxString wxWebViewEdgeImpl::ms_version;
+wxCOMPtr<ICoreWebView2Environment> wxWebViewEdgeImpl::ms_webViewEnvironment;
+int wxWebViewEdgeImpl::ms_warmedUp = -1;
+int wxWebViewEdgeImpl::ms_warmUpCount = 0;
+HWND wxWebViewEdgeImpl::ms_warmUpHwnd = NULL;
+const wxChar *wxWebViewEdgeImpl::ms_warmUpClassName = NULL;
+wxVector< wxCOMPtr<ICoreWebView2Controller> > wxWebViewEdgeImpl::ms_warmUpWebViewControllers;
 
 wxWebViewEdgeImpl::wxWebViewEdgeImpl(wxWebViewEdge* webview):
     m_ctrl(webview)
@@ -90,31 +97,36 @@ bool wxWebViewEdgeImpl::Create()
     m_historyEnabled = true;
     m_historyPosition = -1;
 
-    wxString userDataPath = wxStandardPaths::Get().GetUserLocalDataDir();
+    return CreateWebViewController(this);
+}
 
-    HRESULT hr = wxCreateCoreWebView2EnvironmentWithOptions(
-        ms_browserExecutableDir.wc_str(),
-        userDataPath.wc_str(),
-        nullptr,
-        Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(this,
-            &wxWebViewEdgeImpl::OnEnvironmentCreated).Get());
-    if (FAILED(hr))
+HRESULT wxWebViewEdgeImpl::OnWarmUpWebViewCreated(HRESULT result, ICoreWebView2Controller * webViewController)
+{
+    if (SUCCEEDED(result))
     {
-        wxLogApiError("CreateWebView2EnvironmentWithOptions", hr);
-        return false;
+        wxCOMPtr<ICoreWebView2Controller> ctrl(webViewController);
+        ms_warmUpWebViewControllers.push_back(ctrl);
     }
-    else
-        return true;
+    ms_warmedUp = 1;
+    return S_OK;
 }
 
 HRESULT wxWebViewEdgeImpl::OnEnvironmentCreated(
     HRESULT WXUNUSED(result), ICoreWebView2Environment* environment)
 {
-    environment->QueryInterface(IID_PPV_ARGS(&m_webViewEnvironment));
-    m_webViewEnvironment->CreateCoreWebView2Controller(
-        m_ctrl->GetHWND(),
-        Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-            this, &wxWebViewEdgeImpl::OnWebViewCreated).Get());
+    environment->QueryInterface(IID_PPV_ARGS(&ms_webViewEnvironment));
+
+    for (int i = 0; i < ms_warmUpCount; i++)
+    {
+        if (FAILED(ms_webViewEnvironment->CreateCoreWebView2Controller(
+            ms_warmUpHwnd,
+            Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                &wxWebViewEdgeImpl::OnWarmUpWebViewCreated).Get())))
+        {
+            ms_warmedUp = -1;
+        }
+    }
+
     return S_OK;
 }
 
@@ -151,7 +163,83 @@ bool wxWebViewEdgeImpl::Initialize()
 
 void wxWebViewEdgeImpl::Uninitialize()
 {
+    if (ms_warmUpHwnd)
+    {
+        if (!::DestroyWindow(ms_warmUpHwnd))
+        {
+            wxLogLastError(wxT("DestroyWindow(wxWebViewEdgeImpl)"));
+        }
+
+        ms_warmUpHwnd = NULL;
+    }
+
+    if (ms_warmUpClassName)
+    {
+        if (!::UnregisterClass(ms_warmUpClassName, wxGetInstance()))
+        {
+            wxLogLastError(wxT("UnregisterClass(\"wxWebViewEdgeWarmUpWindow\")"));
+        }
+
+        ms_warmUpClassName = NULL;
+    }
+    ms_warmUpWebViewControllers.clear();
+    ms_webViewEnvironment.reset();
     ms_loaderDll.Unload();
+}
+
+void wxWebViewEdgeImpl::WarmUp(int count)
+{
+    ms_warmedUp = 0;
+    ms_warmUpCount = count;
+
+    static const wxChar *HIDDEN_WINDOW_CLASS = wxT("wxWebViewEdgeWarmUpWindow");
+    if (!ms_warmUpHwnd)
+    {
+        ms_warmUpHwnd = wxCreateHiddenWindow(&ms_warmUpClassName, HIDDEN_WINDOW_CLASS,
+            ::DefWindowProc);
+    }
+
+    wxString userDataPath = wxStandardPaths::Get().GetUserLocalDataDir();
+    HRESULT hr = wxCreateCoreWebView2EnvironmentWithOptions(
+        ms_browserExecutableDir.wc_str(),
+        userDataPath.wc_str(),
+        nullptr,
+        Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+            &wxWebViewEdgeImpl::OnEnvironmentCreated).Get());
+    if (FAILED(hr))
+    {
+        wxLogApiError("CreateWebView2EnvironmentWithOptions", hr);
+        ms_warmedUp = -1;
+    }
+}
+
+bool wxWebViewEdgeImpl::CreateWebViewController(wxWebViewEdgeImpl* impl)
+{
+    // Warm up if not done
+    if (ms_warmedUp == -1)
+        WarmUp(1);
+    // Wait for warm up
+    while (ms_warmedUp != 1)
+        wxYield();
+
+    // If no controllers are available create a new one
+    if (ms_warmUpWebViewControllers.empty())
+    {
+        ms_webViewEnvironment->CreateCoreWebView2Controller(
+            impl->m_ctrl->GetHWND(),
+            Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                impl, &wxWebViewEdgeImpl::OnWebViewCreated).Get());
+    }
+    else
+    {
+        // Reparent already created controller to control
+        wxCOMPtr<ICoreWebView2Controller> controller(ms_warmUpWebViewControllers.back());
+        ms_warmUpWebViewControllers.pop_back();
+        controller->put_ParentWindow(impl->m_ctrl->GetHWND());
+        impl->OnWebViewCreated(S_OK, controller);
+    }
+
+    return true;
 }
 
 void wxWebViewEdgeImpl::UpdateBounds()
@@ -932,6 +1020,11 @@ wxVersionInfo wxWebViewFactoryEdge::GetVersionInfo()
     tk.GetNextToken().ToLong(&micro);
 
     return wxVersionInfo("Microsoft Edge WebView2", major, minor, micro);
+}
+
+void wxWebViewFactoryEdge::WarmUp(int count)
+{
+    wxWebViewEdgeImpl::WarmUp(count);
 }
 
 // ----------------------------------------------------------------------------
