@@ -111,8 +111,6 @@ private:
 
     void OnTopLevelParentIconized(wxIconizeEvent& event);
 
-    bool RunScriptSync(const wxString& javascript, wxString* output = NULL) const;
-
     wxDECLARE_DYNAMIC_CLASS(wxWebViewEdge);
 };
 
