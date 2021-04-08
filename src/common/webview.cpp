@@ -244,7 +244,7 @@ wxString wxWebView::GetUserAgent() const
 class wxSyncScriptExecution
 {
 public:
-    int result = -1;
+    int result;
     wxString output;
 };
 
@@ -258,6 +258,7 @@ void wxWebView::OnSyncScriptResult(wxCommandEvent& evt)
 bool wxWebView::RunScript(const wxString& javascript, wxString* output) const
 {
     wxSyncScriptExecution exec;
+    exec.result = -1;
     RunScriptAsync(javascript, m_runScriptId, &exec);
 
     // Wait for script exection
