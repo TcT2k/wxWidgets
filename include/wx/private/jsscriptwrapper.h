@@ -69,7 +69,7 @@ public:
 
     // Get the code to execute, its returned value will be either the value,
     // if it executed successfully, or the exception message prefixed with
-    // "__wxexc:" if an error occured.
+    // "__wxexc:" if an error occurred.
     //
     // Either use SetOutput() to specify the script result or access it directly
     // Using GetOutputRef()
@@ -178,7 +178,7 @@ public:
     //
     // Returns true if executed successfully
     //    string of the result will be put into output
-    // Returns false when an exception occured
+    // Returns false when an exception occurred
     //    string will be the exception message
     static bool ExtractOutput(const wxString& result, wxString* output)
     {
