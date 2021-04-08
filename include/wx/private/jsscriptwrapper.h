@@ -69,7 +69,7 @@ public:
 
     // Get the code to execute, its returned value will be either the value,
     // if it executed successfully, or the exception message prefixed with
-    // "__wxexc:" if an error occurred.
+    // "__wxexc:" if an error occured.
     //
     // Either use SetOutput() to specify the script result or access it directly
     // Using GetOutputRef()
