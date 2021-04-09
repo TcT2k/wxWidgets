@@ -129,7 +129,7 @@ public:
     virtual bool AddUserScript(const wxString& javascript,
         wxWebViewUserScriptInjectionTime injectionTime = wxWEBVIEW_INJECT_AT_DOCUMENT_START) wxOVERRIDE;
     virtual void RemoveAllUserScripts() wxOVERRIDE;
-#else    
+#else
     virtual bool RunScript(const wxString& javascript, wxString* output = NULL) const wxOVERRIDE;
 #endif
 
